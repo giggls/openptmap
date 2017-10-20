@@ -1,0 +1,651 @@
+<!DOCTYPE Map [
+<!ENTITY datasource-settings SYSTEM "datasource-settings.xml.inc">
+<!ENTITY dwithin_4326 "0.00001">
+<!ENTITY dwithin_node_way "&dwithin_900913;">
+<!-- use 'world_boundaries', which is the usual naming for the local folder the coastline shapefiles are unzipped into --><!ENTITY world_boundaries "./world_boundaries/">
+<!-- use 'planet_osm' unless you have customized your database table prefix using the osm2pgsql 'prefix' flag --><!ENTITY prefix "planet_osm">
+<!ENTITY srs900913 "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over">
+<!ENTITY srsmercator "+proj=merc +datum=WGS84 +over">
+<!ENTITY srs4326 "+init=epsg:4326">
+<!ENTITY maxscale_zoom0 "<MaxScaleDenominator>250000000000</MaxScaleDenominator>">
+<!ENTITY maxscale_zoom1 "<MaxScaleDenominator>500000000</MaxScaleDenominator>">
+<!ENTITY minscale_zoom1 "<MinScaleDenominator>200000000</MinScaleDenominator>">
+<!ENTITY maxscale_zoom2 "<MaxScaleDenominator>200000000</MaxScaleDenominator>">
+<!ENTITY minscale_zoom2 "<MinScaleDenominator>100000000</MinScaleDenominator>">
+<!ENTITY maxscale_zoom3 "<MaxScaleDenominator>100000000</MaxScaleDenominator>">
+<!ENTITY minscale_zoom3 "<MinScaleDenominator>50000000</MinScaleDenominator>">
+<!ENTITY maxscale_zoom4 "<MaxScaleDenominator>50000000</MaxScaleDenominator>">
+<!ENTITY minscale_zoom4 "<MinScaleDenominator>25000000</MinScaleDenominator>">
+<!ENTITY maxscale_zoom5 "<MaxScaleDenominator>25000000</MaxScaleDenominator>">
+<!ENTITY minscale_zoom5 "<MinScaleDenominator>12500000</MinScaleDenominator>">
+<!ENTITY maxscale_zoom6 "<MaxScaleDenominator>12500000</MaxScaleDenominator>">
+<!ENTITY minscale_zoom6 "<MinScaleDenominator>6500000</MinScaleDenominator>">
+<!ENTITY maxscale_zoom7 "<MaxScaleDenominator>6500000</MaxScaleDenominator>">
+<!ENTITY minscale_zoom7 "<MinScaleDenominator>3000000</MinScaleDenominator>">
+<!ENTITY maxscale_zoom8 "<MaxScaleDenominator>3000000</MaxScaleDenominator>">
+<!ENTITY minscale_zoom8 "<MinScaleDenominator>1500000</MinScaleDenominator>">
+<!ENTITY maxscale_zoom9 "<MaxScaleDenominator>1500000</MaxScaleDenominator>">
+<!ENTITY minscale_zoom9 "<MinScaleDenominator>750000</MinScaleDenominator>">
+<!ENTITY maxscale_zoom10 "<MaxScaleDenominator>750000</MaxScaleDenominator>">
+<!ENTITY minscale_zoom10 "<MinScaleDenominator>400000</MinScaleDenominator>">
+<!ENTITY maxscale_zoom11 "<MaxScaleDenominator>400000</MaxScaleDenominator>">
+<!ENTITY minscale_zoom11 "<MinScaleDenominator>200000</MinScaleDenominator>">
+<!ENTITY maxscale_zoom12 "<MaxScaleDenominator>200000</MaxScaleDenominator>">
+<!ENTITY minscale_zoom12 "<MinScaleDenominator>100000</MinScaleDenominator>">
+<!ENTITY maxscale_zoom13 "<MaxScaleDenominator>100000</MaxScaleDenominator>">
+<!ENTITY minscale_zoom13 "<MinScaleDenominator>50000</MinScaleDenominator>">
+<!ENTITY maxscale_zoom14 "<MaxScaleDenominator>50000</MaxScaleDenominator>">
+<!ENTITY minscale_zoom14 "<MinScaleDenominator>25000</MinScaleDenominator>">
+<!ENTITY maxscale_zoom15 "<MaxScaleDenominator>25000</MaxScaleDenominator>">
+<!ENTITY minscale_zoom15 "<MinScaleDenominator>12500</MinScaleDenominator>">
+<!ENTITY maxscale_zoom16 "<MaxScaleDenominator>12500</MaxScaleDenominator>">
+<!ENTITY minscale_zoom16 "<MinScaleDenominator>5000</MinScaleDenominator>">
+<!ENTITY maxscale_zoom17 "<MaxScaleDenominator>5000</MaxScaleDenominator>">
+<!ENTITY minscale_zoom17 "<MinScaleDenominator>2500</MinScaleDenominator>">
+<!ENTITY maxscale_zoom18 "<MaxScaleDenominator>2500</MaxScaleDenominator>">
+<!ENTITY minscale_zoom18 "">
+]>
+<!-- This stylesheet uses features only available in mapnik builds with
+     libxml2 as the XML parser. Furthermore, there are other features
+     and behaviour that necessitate an upgrade to mapnik 0.7.1 --><Map srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over" minimum-version="0.7.1" background-color="transparent">
+  <FontSet name="book-fonts">
+    <Font face-name="DejaVu Sans Book"/>
+  </FontSet>
+  <FontSet name="bold-fonts">
+    <Font face-name="DejaVu Sans Bold"/>
+  </FontSet>
+  <FontSet name="oblique-fonts">
+    <Font face-name="DejaVu Sans Oblique"/>
+  </FontSet>
+  <Style name="ferry-routes">
+    <Rule>
+      <MaxScaleDenominator>200000</MaxScaleDenominator>
+      <MinScaleDenominator>25000</MinScaleDenominator>
+      <LineSymbolizer stroke-linejoin="round" stroke="#ff7fbf" stroke-width="3" stroke-linecap="round"/>
+    </Rule>
+    <Rule>
+      <MaxScaleDenominator>25000</MaxScaleDenominator>
+      <LineSymbolizer stroke-linejoin="round" stroke="#ff7fbf" stroke-width="6" stroke-linecap="round"/>
+    </Rule>
+  </Style>
+  <Layer name="ferry-routes" status="on" srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over">
+    <StyleName>ferry-routes</StyleName>
+    <Datasource>
+      <Parameter name="table">
+      (select way, route from pt_planet_osm_line where
+      route='ferry' or line='ferry') as routes
+      </Parameter>
+      &datasource-settings;
+    </Datasource>
+  </Layer>
+  <Style name="bus-alternate-routes">
+    <Rule>
+      <MaxScaleDenominator>200000</MaxScaleDenominator>
+      <MinScaleDenominator>25000</MinScaleDenominator>
+      <LineSymbolizer stroke-linejoin="round" stroke="#f00" stroke-width="3" stroke-dasharray="6,6"/>
+    </Rule>
+    <Rule>
+      <MaxScaleDenominator>25000</MaxScaleDenominator>
+      <LineSymbolizer stroke-linejoin="round" stroke="#f00" stroke-width="6" stroke-dasharray="12,12"/>
+    </Rule>
+  </Style>
+  <Layer name="bus-alternate-routes" status="on" srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over">
+    <StyleName>bus-alternate-routes</StyleName>
+    <Datasource>
+      <Parameter name="table">
+      (select way, route from pt_planet_osm_line where
+      (route='bus' or line='bus') and state='alternate') as routes
+      </Parameter>
+      &datasource-settings;
+    </Datasource>
+  </Layer>
+  <Style name="bus-routes">
+    <Rule>
+      <MaxScaleDenominator>200000</MaxScaleDenominator>
+      <MinScaleDenominator>25000</MinScaleDenominator>
+      <LineSymbolizer stroke-linejoin="round" stroke="#f00" stroke-width="3" stroke-linecap="round"/>
+    </Rule>
+    <Rule>
+      <MaxScaleDenominator>25000</MaxScaleDenominator>
+      <LineSymbolizer stroke-linejoin="round" stroke="#f00" stroke-width="6" stroke-linecap="round"/>
+    </Rule>
+  </Style>
+  <Layer name="bus-routes" status="on" srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over">
+    <StyleName>bus-routes</StyleName>
+    <Datasource>
+      <Parameter name="table">
+      (select way, route from pt_planet_osm_line where
+      (route='bus' or line='bus') and (state is null or not state='alternate')) as routes
+      </Parameter>
+      &datasource-settings;
+    </Datasource>
+  </Layer>
+  <Style name="tram-routes">
+    <Rule>
+      <MaxScaleDenominator>400000</MaxScaleDenominator>
+      <MinScaleDenominator>200000</MinScaleDenominator>
+      <Filter>[route]='tram'</Filter>
+      <LineSymbolizer stroke-linejoin="round" stroke="#d0f" stroke-width="3" stroke-linecap="round"/>
+    </Rule>
+    <Rule>
+      <MaxScaleDenominator>200000</MaxScaleDenominator>
+      <Filter>[route]='tram'</Filter>
+      <LineSymbolizer stroke-linejoin="round" stroke="#d0f" stroke-width="6" stroke-linecap="round"/>
+    </Rule>
+    <Rule>
+      <MaxScaleDenominator>400000</MaxScaleDenominator>
+      <MinScaleDenominator>200000</MinScaleDenominator>
+      <Filter>[route]='monorail'</Filter>
+      <LineSymbolizer stroke-linejoin="round" stroke="#d0f" stroke-width="3" stroke-linecap="round"/>
+    </Rule>
+    <Rule>
+      <MaxScaleDenominator>200000</MaxScaleDenominator>
+      <Filter>[route]='monorail'</Filter>
+      <LineSymbolizer stroke-linejoin="round" stroke="#d0f" stroke-width="6" stroke-linecap="round"/>
+    </Rule>
+    <Rule>
+      <MaxScaleDenominator>400000</MaxScaleDenominator>
+      <MinScaleDenominator>200000</MinScaleDenominator>
+      <Filter>[route]='funicular'</Filter>
+      <LineSymbolizer stroke-linejoin="round" stroke="#d0f" stroke-width="3" stroke-linecap="round"/>
+    </Rule>
+    <Rule>
+      <MaxScaleDenominator>200000</MaxScaleDenominator>
+      <Filter>[route]='funicular'</Filter>
+      <LineSymbolizer stroke-linejoin="round" stroke="#d0f" stroke-width="6" stroke-linecap="round"/>
+    </Rule>
+    <Rule>
+      <MaxScaleDenominator>400000</MaxScaleDenominator>
+      <MinScaleDenominator>25000</MinScaleDenominator>
+      <Filter>[route]='trolleybus'</Filter>
+      <LineSymbolizer stroke-linejoin="round" stroke="#b22" stroke-width="3" stroke-linecap="round"/>
+    </Rule>
+    <Rule>
+      <MaxScaleDenominator>25000</MaxScaleDenominator>
+      <Filter>[route]='trolleybus'</Filter>
+      <LineSymbolizer stroke-linejoin="round" stroke="#b22" stroke-width="6" stroke-linecap="round"/>
+    </Rule>
+    <Rule>
+      <MaxScaleDenominator>400000</MaxScaleDenominator>
+      <MinScaleDenominator>25000</MinScaleDenominator>
+      <Filter>[route]='aerialway'</Filter>
+      <LineSymbolizer stroke-linejoin="round" stroke="#642" stroke-width="3" stroke-linecap="round"/>
+    </Rule>
+    <Rule>
+      <MaxScaleDenominator>25000</MaxScaleDenominator>
+      <Filter>[route]='aerialway'</Filter>
+      <LineSymbolizer stroke-linejoin="round" stroke="#642" stroke-width="6" stroke-linecap="round"/>
+    </Rule>
+  </Style>
+  <Layer name="tram-routes" status="on" srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over">
+    <StyleName>tram-routes</StyleName>
+    <Datasource>
+      <Parameter name="table">
+      (select way, route from pt_planet_osm_line where
+      route='tram' or route='monorail' or route='funicular' or route='trolleybus' or route='aerialway' or line='tram') as routes
+      </Parameter>
+      &datasource-settings;
+    </Datasource>
+  </Layer>
+  <Style name="subway-routes">
+    <Rule>
+      <MaxScaleDenominator>400000</MaxScaleDenominator>
+      <MinScaleDenominator>200000</MinScaleDenominator>
+      <LineSymbolizer stroke-linejoin="round" stroke="#00f" stroke-width="3" stroke-linecap="round"/>
+    </Rule>
+    <Rule>
+      <MaxScaleDenominator>200000</MaxScaleDenominator>
+      <LineSymbolizer stroke-linejoin="round" stroke="#00f" stroke-width="6" stroke-linecap="round"/>
+    </Rule>
+  </Style>
+  <Layer name="subway-routes" status="on" srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over">
+    <StyleName>subway-routes</StyleName>
+    <Datasource>
+      <Parameter name="table">
+      (select way, route from pt_planet_osm_line where
+      route='subway' or line='subway') as routes
+      </Parameter>
+      &datasource-settings;
+    </Datasource>
+  </Layer>
+  <Style name="fbahn-routes">
+    <Rule>
+      <MinScaleDenominator>12500000</MinScaleDenominator>
+      <LineSymbolizer stroke-linejoin="round" stroke="#000" stroke-width="1" stroke-linecap="round"/>
+    </Rule>
+    <Rule>
+      <MaxScaleDenominator>12500000</MaxScaleDenominator>
+      <MinScaleDenominator>6500000</MinScaleDenominator>
+      <LineSymbolizer stroke-linejoin="round" stroke="#000" stroke-width="2" stroke-linecap="round"/>
+    </Rule>
+    <Rule>
+      <MaxScaleDenominator>6500000</MaxScaleDenominator>
+      <MinScaleDenominator>1500000</MinScaleDenominator>
+      <LineSymbolizer stroke-linejoin="round" stroke="#000" stroke-width="5" stroke-linecap="round"/>
+    </Rule>
+    <Rule>
+      <MaxScaleDenominator>1500000</MaxScaleDenominator>
+      <LineSymbolizer stroke-linejoin="round" stroke="#000" stroke-width="8" stroke-linecap="round"/>
+    </Rule>
+  </Style>
+  <Layer name="fbahn-routes" status="on" srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over">
+    <StyleName>fbahn-routes</StyleName>
+    <Datasource>
+      <Parameter name="table">
+      (select way, route from pt_planet_osm_line where
+      (route='train' or route='railway' or line='rail') and
+      (ref is null or not ref like 'S%')) as routes
+      </Parameter>
+      &datasource-settings;
+    </Datasource>
+  </Layer>
+  <Style name="sbahn-routes">
+    <Rule>
+      <MaxScaleDenominator>12500000</MaxScaleDenominator>
+      <MinScaleDenominator>6500000</MinScaleDenominator>
+      <LineSymbolizer stroke-linejoin="round" stroke="#000" stroke-width="1" stroke-linecap="round"/>
+    </Rule>
+    <Rule>
+      <MaxScaleDenominator>6500000</MaxScaleDenominator>
+      <MinScaleDenominator>1500000</MinScaleDenominator>
+      <LineSymbolizer stroke-linejoin="round" stroke="#0c0" stroke-width="3" stroke-linecap="round"/>
+    </Rule>
+    <Rule>
+      <MaxScaleDenominator>1500000</MaxScaleDenominator>
+      <LineSymbolizer stroke-linejoin="round" stroke="#0c0" stroke-width="6" stroke-linecap="round"/>
+    </Rule>
+  </Style>
+  <Layer name="sbahn-routes" status="on" srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over">
+    <StyleName>sbahn-routes</StyleName>
+    <Datasource>
+      <Parameter name="table">
+      (select way,route,line from pt_planet_osm_line where
+      route='light_rail' or line='light_rail' or (
+      (route='train' or route='railway' or line='rail') and
+      ref like 'S%')) as ways
+      </Parameter>
+      &datasource-settings;
+    </Datasource>
+  </Layer>
+  <Style name="pt-directions-blank">
+    <Rule>
+      <MaxScaleDenominator>5000</MaxScaleDenominator>
+      <LineSymbolizer stroke-linejoin="bevel" stroke="white" stroke-width="6" stroke-dasharray="0,8,11,71"/>
+    </Rule>
+  </Style>
+  <Layer name="pt-directions-blank" status="on" srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over">
+    <StyleName>pt-directions-blank</StyleName>
+    <Datasource>
+      <Parameter name="table">
+      (select way, route from pt_planet_osm_line where
+      route='subway' or line='subway') as routes
+      </Parameter>
+      &datasource-settings;
+    </Datasource>
+  </Layer>
+  <Style name="pt-directions">
+    <Rule>
+      <MaxScaleDenominator>5000</MaxScaleDenominator>
+      <LineSymbolizer stroke-linejoin="bevel" stroke="black" stroke-width="1" stroke-dasharray="0,10,8,72"/>
+      <LineSymbolizer stroke-linejoin="bevel" stroke="black" stroke-width="2" stroke-dasharray="0,10,7,73"/>
+      <LineSymbolizer stroke-linejoin="bevel" stroke="black" stroke-width="3" stroke-dasharray="0,10,6,74"/>
+      <LineSymbolizer stroke-linejoin="bevel" stroke="black" stroke-width="4" stroke-dasharray="0,10,5,75"/>
+      <LineSymbolizer stroke-linejoin="bevel" stroke="black" stroke-width="5" stroke-dasharray="0,10,4,76"/>
+      <LineSymbolizer stroke-linejoin="bevel" stroke="black" stroke-width="6" stroke-dasharray="0,10,3,77"/>
+      <LineSymbolizer stroke-linejoin="bevel" stroke="black" stroke-width="7" stroke-dasharray="0,10,2,78"/>
+      <LineSymbolizer stroke-linejoin="bevel" stroke="black" stroke-width="8" stroke-dasharray="0,10,1,79"/>
+    </Rule>
+  </Style>
+  <Layer name="pt-directions" status="on" srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over">
+    <StyleName>pt-directions</StyleName>
+    <Datasource>
+      <Parameter name="table">
+      (select way, route from pt_planet_osm_line where
+      route='tram' or route='monorail' or route='subway') as routes
+      </Parameter>
+      &datasource-settings;
+    </Datasource>
+  </Layer>
+  <!---->
+  <Style name="stations">
+    <Rule>
+      <MaxScaleDenominator>200000</MaxScaleDenominator>
+      <MinScaleDenominator>25000</MinScaleDenominator>
+      <Filter>[railway]='station' or ([public_transport]='stop_area' and [train]='yes')</Filter>
+      <PointSymbolizer file="./symbols//station_small.png"/>
+      <TextSymbolizer fontset-name="bold-fonts" size="10" fill="#000" dy="-8" halo-radius="1" wrap-width="0">[name]</TextSymbolizer>
+    </Rule>
+    <Rule>
+      <MaxScaleDenominator>25000</MaxScaleDenominator>
+      <Filter>[railway]='station' or ([public_transport]='stop_area' and [train]='yes')</Filter>
+      <PointSymbolizer file="./symbols//station.png"/>
+      <TextSymbolizer fontset-name="bold-fonts" size="12" fill="#000" dy="-10" halo-radius="1" wrap-width="0">[name]</TextSymbolizer>
+    </Rule>
+    <Rule>
+      <MaxScaleDenominator>200000</MaxScaleDenominator>
+      <MinScaleDenominator>25000</MinScaleDenominator>
+      <Filter>[railway]='halt' or [railway]='tram_stop' or [aerialway]='station'</Filter>
+      <PointSymbolizer file="./symbols//halt.png"/>
+    </Rule>
+    <Rule>
+      <MaxScaleDenominator>100000</MaxScaleDenominator>
+      <MinScaleDenominator>25000</MinScaleDenominator>
+      <Filter>[railway]='halt' or [railway]='tram_stop' or [aerialway]='station'</Filter>
+      <TextSymbolizer fontset-name="book-fonts" size="9" fill="#000" dy="-7" halo-radius="1" wrap-width="0">[name]</TextSymbolizer>
+    </Rule>
+    <Rule>
+      <MaxScaleDenominator>25000</MaxScaleDenominator>
+      <Filter>[railway]='halt' or [railway]='tram_stop' or [aerialway]='station'</Filter>
+      <PointSymbolizer file="./symbols//station_small.png"/>
+      <TextSymbolizer fontset-name="book-fonts" size="11" fill="#000" dy="-8" halo-radius="1" wrap-width="0">[name]</TextSymbolizer>
+    </Rule>
+    <Rule>
+      <MaxScaleDenominator>100000</MaxScaleDenominator>
+      <MinScaleDenominator>25000</MinScaleDenominator>
+      <Filter>([public_transport]='platform' and [bus]='yes') or [highway]='bus_stop'</Filter>
+      <PointSymbolizer file="./symbols//bus_stop_small.png"/>
+    </Rule>
+    <Rule>
+      <MaxScaleDenominator>25000</MaxScaleDenominator>
+      <Filter>([public_transport]='platform' and [bus]='yes') or [highway]='bus_stop'</Filter>
+      <PointSymbolizer file="./symbols//halt.png"/>
+      <TextSymbolizer fontset-name="book-fonts" size="9" fill="#000" dy="-7" halo-radius="1" wrap-width="0">[name]</TextSymbolizer>
+    </Rule>
+    <Rule>
+      <MaxScaleDenominator>100000</MaxScaleDenominator>
+      <MinScaleDenominator>25000</MinScaleDenominator>
+      <Filter>[amenity]='bus_station'</Filter>
+      <PointSymbolizer file="./symbols//halt.png"/>
+      <TextSymbolizer fontset-name="book-fonts" size="9" fill="#000" dy="-7" halo-radius="1" wrap-width="0">[name]</TextSymbolizer>
+    </Rule>
+    <Rule>
+      <MaxScaleDenominator>25000</MaxScaleDenominator>
+      <Filter>[amenity]='bus_station'</Filter>
+      <PointSymbolizer file="./symbols//station_small.png"/>
+      <TextSymbolizer fontset-name="book-fonts" size="11" fill="#000" dy="-8" halo-radius="1" wrap-width="0">[name]</TextSymbolizer>
+    </Rule>
+  </Style>
+  <Layer name="amenity-stations" status="on" srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over">
+    <StyleName>stations</StyleName>
+    <Datasource>
+      <Parameter name="table">
+      (select way,name,highway,public_transport,train,railway,aerialway,amenity,bus,case
+      when railway='station' and (name like '%Hbf' or name like '%HB' or name like '%Hauptbahnhof') then 1
+      when railway='station' or (public_transport='stop_area' and train='yes') then 2
+      when railway='halt' then 3
+      when railway='tram_stop' then 4
+      when amenity='bus_station' then 5
+      when aerialway='station' then 6
+      when (public_transport='platform' and bus='yes') or highway='bus_stop' then 7
+      else 9 end as prio
+      from pt_planet_osm_point
+      where (highway in ('bus_station','bus_stop') or amenity='bus_station' or
+      railway in ('station','halt','tram_stop') or aerialway='station' or
+      (public_transport='platform' and bus='yes') )
+      and not coalesce(disused,'')='yes' order by prio
+      ) as stations
+      </Parameter>
+      &datasource-settings;
+    </Datasource>
+  </Layer>
+  <Layer name="amenity-stations-poly" status="on" srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over">
+    <StyleName>stations</StyleName>
+    <Datasource>
+      <Parameter name="table">
+      (select way,name,highway,public_transport,train,railway,aerialway,amenity,bus,case
+      when railway='station' and (name like '%Hbf' or name like '%HB' or name like '%Hauptbahnhof') then 1
+      when railway='station' or (public_transport='stop_area' and train='yes') then 2
+      when railway='halt' then 3
+      when railway='tram_stop' then 4
+      when amenity='bus_station' then 5
+      when aerialway='station' then 6
+      when (public_transport='platform' and bus='yes') or highway='bus_stop' then 7
+      else 9 end as prio
+      from pt_planet_osm_polygon
+      where (highway in ('bus_station','bus_stop') or amenity='bus_station' or
+      railway in ('station','halt','tram_stop') or aerialway='station' or
+      (public_transport='platform' and bus='yes') )
+      and not coalesce(disused,'')='yes' order by prio
+      ) as stations
+      </Parameter>
+      &datasource-settings;
+    </Datasource>
+  </Layer>
+  <!---->
+  <Style name="mainstation">
+    <Rule>
+      <MaxScaleDenominator>6500000</MaxScaleDenominator>
+      <MinScaleDenominator>400000</MinScaleDenominator>
+      <TextSymbolizer fontset-name="bold-fonts" size="12" fill="black" halo-radius="2" wrap-width="0">[shortname]</TextSymbolizer>
+    </Rule>
+  </Style>
+  <Layer name="mainstation" status="on" srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over">
+    <StyleName>mainstation</StyleName>
+    <Datasource>
+      <Parameter name="table">
+      (select way,name,railway,
+      replace(replace(replace(replace(replace(name,'Hauptbahnhof',''),' Hbf',''),')Hbf',')'),' HB',''),' Westbahnhof','')
+      as shortname from pt_planet_osm_point
+      where railway='station' and not coalesce(disused,'')='yes' and (
+      name like '%Hbf' or name like '%HB' or name like '%Hauptbahnhof'
+      or name='Wien Westbahnhof'
+      ) and
+      not lower(name) like 's %' and not lower(name) like 'u %' and not lower(name) like 's+%'
+      and not name like 'F&#252;rth %'
+      ) as stations
+      </Parameter>
+      &datasource-settings;
+    </Datasource>
+  </Layer>
+  <Layer name="mainstation-poly" status="on" srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over">
+    <StyleName>mainstation</StyleName>
+    <Datasource>
+      <Parameter name="table">
+      (select way,name,railway,
+      replace(replace(replace(replace(replace(name,'Hauptbahnhof',''),' Hbf',''),')Hbf',')'),' HB',''),' Westbahnhof','')
+      as shortname from pt_planet_osm_polygon
+      where railway='station' and not coalesce(disused,'')='yes' and (
+      name like '%Hbf' or name like '%HB' or name like '%Hauptbahnhof'
+      or name='Wien Westbahnhof'
+      ) and
+      not lower(name) like 's %' and not lower(name) like 'u %' and not lower(name) like 's+%'
+      and not name like 'F&#252;rth %'
+      ) as stations
+      </Parameter>
+      &datasource-settings;
+    </Datasource>
+  </Layer>
+  <Style name="subway-text">
+    <Rule>
+      <MaxScaleDenominator>400000</MaxScaleDenominator>
+      <MinScaleDenominator>200000</MinScaleDenominator>
+      <TextSymbolizer fontset-name="bold-fonts" size="8" fill="#00f" halo-radius="1" placement="line" repeat-distance="30" spacing="200" wrap-width="12" wrap-character=";" avoid-edges="true">[ref]</TextSymbolizer>
+    </Rule>
+    <Rule>
+      <MaxScaleDenominator>200000</MaxScaleDenominator>
+      <TextSymbolizer fontset-name="bold-fonts" size="11" fill="#00f" halo-radius="1" placement="line" repeat-distance="30" spacing="200" wrap-width="12" wrap-character=";" avoid-edges="true">[ref]</TextSymbolizer>
+    </Rule>
+  </Style>
+  <Layer name="subway-text" status="on" srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over">
+    <StyleName>subway-text</StyleName>
+    <Datasource>
+      <Parameter name="table">
+      (select name,' '||ref||' ' as ref,way,route from pt_planet_osm_line where
+      route='subway' or line='subway' order by ref) as roads
+      </Parameter>
+      &datasource-settings;
+    </Datasource>
+  </Layer>
+  <Style name="tram-text">
+    <Rule>
+      <MaxScaleDenominator>400000</MaxScaleDenominator>
+      <MinScaleDenominator>200000</MinScaleDenominator>
+      <TextSymbolizer fontset-name="bold-fonts" size="8" fill="#d0f" halo-radius="1" placement="line" repeat-distance="30" spacing="200" wrap-width="12" wrap-character=";" avoid-edges="true">[ref]</TextSymbolizer>
+    </Rule>
+    <Rule>
+      <MaxScaleDenominator>200000</MaxScaleDenominator>
+      <TextSymbolizer fontset-name="bold-fonts" size="11" fill="#d0f" halo-radius="1" placement="line" repeat-distance="30" spacing="200" wrap-width="12" wrap-character=";" avoid-edges="true">[ref]</TextSymbolizer>
+    </Rule>
+  </Style>
+  <Layer name="tram-text" status="on" srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over">
+    <StyleName>tram-text</StyleName>
+    <Datasource>
+      <Parameter name="table">
+      (select name,' '||ref||' ' as ref,way,route from pt_planet_osm_line where
+      route='tram' or route='monorail' or route='funicular' or line='tram' order by ref) as roads
+      </Parameter>
+      &datasource-settings;
+    </Datasource>
+  </Layer>
+  <Style name="aerialway-text">
+    <Rule>
+      <MaxScaleDenominator>400000</MaxScaleDenominator>
+      <MinScaleDenominator>25000</MinScaleDenominator>
+      <TextSymbolizer fontset-name="bold-fonts" size="8" fill="#642" halo-radius="1" placement="line" repeat-distance="30" spacing="200" wrap-width="12" wrap-character=";" avoid-edges="true">[ref]</TextSymbolizer>
+    </Rule>
+    <Rule>
+      <MaxScaleDenominator>25000</MaxScaleDenominator>
+      <TextSymbolizer fontset-name="bold-fonts" size="11" fill="#642" halo-radius="1" placement="line" repeat-distance="30" spacing="200" wrap-width="12" wrap-character=";" avoid-edges="true">[ref]</TextSymbolizer>
+    </Rule>
+  </Style>
+  <Layer name="aerialway-text" status="on" srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over">
+    <StyleName>aerialway-text</StyleName>
+    <Datasource>
+      <Parameter name="table">
+      (select name,' '||ref||' ' as ref,way,route from pt_planet_osm_line where
+      route='aerialway' order by ref) as roads
+      </Parameter>
+      &datasource-settings;
+    </Datasource>
+  </Layer>
+  <Style name="trolleybus-text">
+    <Rule>
+      <MaxScaleDenominator>400000</MaxScaleDenominator>
+      <MinScaleDenominator>25000</MinScaleDenominator>
+      <TextSymbolizer fontset-name="bold-fonts" size="8" fill="#b22" halo-radius="1" placement="line" repeat-distance="30" spacing="200" wrap-width="12" wrap-character=";" avoid-edges="true">[ref]</TextSymbolizer>
+    </Rule>
+    <Rule>
+      <MaxScaleDenominator>25000</MaxScaleDenominator>
+      <TextSymbolizer fontset-name="bold-fonts" size="11" fill="#b22" halo-radius="1" placement="line" repeat-distance="30" spacing="200" wrap-width="12" wrap-character=";" avoid-edges="true">[ref]</TextSymbolizer>
+    </Rule>
+  </Style>
+  <Layer name="trolleybus-text" status="on" srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over">
+    <StyleName>trolleybus-text</StyleName>
+    <Datasource>
+      <Parameter name="table">
+      (select name,' '||ref||' ' as ref,way,route from pt_planet_osm_line where
+      route='trolleybus' order by ref) as roads
+      </Parameter>
+      &datasource-settings;
+    </Datasource>
+  </Layer>
+  <Style name="bus-text">
+    <Rule>
+      <MaxScaleDenominator>200000</MaxScaleDenominator>
+      <MinScaleDenominator>25000</MinScaleDenominator>
+      <TextSymbolizer fontset-name="bold-fonts" size="8" fill="#f00" halo-radius="1" placement="line" repeat-distance="30" spacing="200" wrap-width="12" wrap-character=";" avoid-edges="true">[ref]</TextSymbolizer>
+    </Rule>
+    <Rule>
+      <MaxScaleDenominator>25000</MaxScaleDenominator>
+      <TextSymbolizer fontset-name="bold-fonts" size="11" fill="#f00" halo-radius="1" placement="line" repeat-distance="30" spacing="200" wrap-width="12" wrap-character=";" avoid-edges="true">[ref]</TextSymbolizer>
+    </Rule>
+  </Style>
+  <Layer name="bus-text" status="on" srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over">
+    <StyleName>bus-text</StyleName>
+    <Datasource>
+      <Parameter name="table">
+      (select name,'  '||ref||'  ' as ref,way,route from pt_planet_osm_line where
+      (route='bus' or line='bus') and (state is null or not state='alternate') order by ref) as roads
+      </Parameter>
+      &datasource-settings;
+    </Datasource>
+  </Layer>
+  <Style name="bus-alternate-text">
+    <Rule>
+      <MaxScaleDenominator>200000</MaxScaleDenominator>
+      <MinScaleDenominator>25000</MinScaleDenominator>
+      <TextSymbolizer fontset-name="bold-fonts" size="8" fill="#f00" halo-radius="1" placement="line" repeat-distance="30" spacing="200" wrap-width="12" wrap-character=";" avoid-edges="true">[ref]</TextSymbolizer>
+    </Rule>
+    <Rule>
+      <MaxScaleDenominator>25000</MaxScaleDenominator>
+      <TextSymbolizer fontset-name="bold-fonts" size="11" fill="#f00" halo-radius="1" placement="line" repeat-distance="30" spacing="200" wrap-width="12" wrap-character=";" avoid-edges="true">[ref]</TextSymbolizer>
+    </Rule>
+  </Style>
+  <Layer name="bus-alternate-text" status="on" srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over">
+    <StyleName>bus-alternate-text</StyleName>
+    <Datasource>
+      <Parameter name="table">
+      (select name,'  ('||ref||')  ' as ref,way,route from pt_planet_osm_line where
+      (route='bus' or line='bus') and state='alternate' order by ref) as roads
+      </Parameter>
+      &datasource-settings;
+    </Datasource>
+  </Layer>
+  <Style name="ferry-text">
+    <Rule>
+      <MaxScaleDenominator>200000</MaxScaleDenominator>
+      <MinScaleDenominator>25000</MinScaleDenominator>
+      <TextSymbolizer fontset-name="bold-fonts" size="8" fill="#ff7fbf" halo-radius="1" placement="line" repeat-distance="30" spacing="200" wrap-width="12" wrap-character=";" avoid-edges="true">[ref]</TextSymbolizer>
+    </Rule>
+    <Rule>
+      <MaxScaleDenominator>25000</MaxScaleDenominator>
+      <TextSymbolizer fontset-name="bold-fonts" size="11" fill="#ff7fbf" halo-radius="1" placement="line" repeat-distance="30" spacing="200" wrap-width="12" wrap-character=";" avoid-edges="true">[ref]</TextSymbolizer>
+    </Rule>
+  </Style>
+  <Layer name="ferry-text" status="on" srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over">
+    <StyleName>ferry-text</StyleName>
+    <Datasource>
+      <Parameter name="table">
+      (select name,' '||ref||' ' as ref,way,route from pt_planet_osm_line where
+      route='ferry' or line='ferry' order by ref) as roads
+      </Parameter>
+      &datasource-settings;
+    </Datasource>
+  </Layer>
+  <Style name="fbahn-text">
+    <Rule>
+      <MaxScaleDenominator>6500000</MaxScaleDenominator>
+      <MinScaleDenominator>1500000</MinScaleDenominator>
+      <TextSymbolizer fontset-name="bold-fonts" size="9" fill="#000" halo-radius="1" placement="line" repeat-distance="30" spacing="200" wrap-width="12" wrap-character=";" avoid-edges="true">[ref]</TextSymbolizer>
+    </Rule>
+    <Rule>
+      <MaxScaleDenominator>1500000</MaxScaleDenominator>
+      <TextSymbolizer fontset-name="bold-fonts" size="12" fill="#000" halo-radius="1" placement="line" repeat-distance="30" spacing="200" wrap-width="12" wrap-character=";" avoid-edges="true">[ref]</TextSymbolizer>
+    </Rule>
+  </Style>
+  <Layer name="fbahn-text" status="on" srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over">
+    <StyleName>fbahn-text</StyleName>
+    <Datasource>
+      <Parameter name="table">
+      (select name,' '||ref||' ' as ref,way,route from pt_planet_osm_line where
+      (route='train' or route='railway' or line='rail') and
+      (ref is null or not ref like 'S%') order by ref) as routes
+      </Parameter>
+      &datasource-settings;
+    </Datasource>
+  </Layer>
+  <Style name="sbahn-text">
+    <Rule>
+      <MaxScaleDenominator>6500000</MaxScaleDenominator>
+      <MinScaleDenominator>1500000</MinScaleDenominator>
+      <TextSymbolizer fontset-name="bold-fonts" size="8" fill="#0c0" halo-radius="1" placement="line" repeat-distance="30" spacing="200" wrap-width="12" wrap-character=";" avoid-edges="true">[ref]</TextSymbolizer>
+    </Rule>
+    <Rule>
+      <MaxScaleDenominator>1500000</MaxScaleDenominator>
+      <TextSymbolizer fontset-name="bold-fonts" size="11" fill="#0c0" halo-radius="1" placement="line" repeat-distance="30" spacing="200" wrap-width="12" wrap-character=";" avoid-edges="true">[ref]</TextSymbolizer>
+    </Rule>
+  </Style>
+  <Layer name="sbahn-text" status="on" srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over">
+    <StyleName>sbahn-text</StyleName>
+    <Datasource>
+      <Parameter name="table">
+      (select name,' '||ref||' ' as ref,way,route,line from pt_planet_osm_line where
+      route='light_rail' or line='light_rail' or (
+      (route='train' or route='railway' or line='rail') and
+      ref like 'S%') order by ref) as routes
+      </Parameter>
+      &datasource-settings;
+    </Datasource>
+  </Layer>
+</Map>
+
