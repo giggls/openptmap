@@ -1,6 +1,7 @@
 <!DOCTYPE Map [
 <!ENTITY prefix "pt_planet_osm">
 <!ENTITY datasource-settings SYSTEM "datasource-settings.xml.inc">
+<!ENTITY fontset-settings SYSTEM "fontset-settings.xml.inc">
 <!ENTITY dwithin_4326 "0.00001">
 <!ENTITY dwithin_node_way "&dwithin_900913;">
 <!ENTITY srs900913 "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over">
@@ -45,15 +46,7 @@
 <!ENTITY minscale_zoom18 "">
 ]>
 <Map srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over" minimum-version="0.7.1" background-color="transparent">
-  <FontSet name="book-fonts">
-    <Font face-name="DejaVu Sans Book"/>
-  </FontSet>
-  <FontSet name="bold-fonts">
-    <Font face-name="DejaVu Sans Bold"/>
-  </FontSet>
-  <FontSet name="oblique-fonts">
-    <Font face-name="DejaVu Sans Oblique"/>
-  </FontSet>
+  &fontset-settings;
   <Style name="ferry-routes">
     <Rule>
       &maxscale_zoom12;
