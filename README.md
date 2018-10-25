@@ -1,7 +1,7 @@
-#  OSM Open Public Transport Map
-## http://openptmap.org/
+#  OSM Open Public Transport Map Style
+## as used on http://openptmap.org/
 
-## Fork and cleanup from http://openptmap.org/f/
+## Fork and cleanup of original style available at http://openptmap.org/f/
 
 The provided views are working with the database layout used in
 German Mapnik style
